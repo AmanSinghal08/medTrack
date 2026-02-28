@@ -72,7 +72,7 @@ export default function Brand() {
       </div>
 
       {/* Main Content Card */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
         {/* Search Bar */}
         <div className="p-6 border-b border-slate-50">
           <div className="relative max-w-md">

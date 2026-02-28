@@ -322,7 +322,7 @@ export default function DealerPayment() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
             <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
               <Receipt size={18} className="text-blue-600" /> Pending Dealer Payments
@@ -435,7 +435,7 @@ export default function DealerPayment() {
           </div>
         </div>
 
-        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
             <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
               <Check size={18} className="text-indigo-600" /> Dealer Payment History

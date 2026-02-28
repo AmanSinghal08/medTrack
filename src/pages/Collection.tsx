@@ -269,7 +269,7 @@ export default function Collection() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm">
+      <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -318,13 +318,13 @@ export default function Collection() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pending Payments */}
-        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
             <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
               <Receipt size={18} className="text-blue-600" /> Pending Payments
             </h3>
           </div>
-          <div className="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+          <div className="p-4 space-y-3 max-h-150 overflow-y-auto">
             {filteredPendingOrders.map(order => {
               const daysUntilDue = getDaysUntilDue(order.dueDate);
               const color = getStatusColor(daysUntilDue);
@@ -426,13 +426,13 @@ export default function Collection() {
         </div>
 
         {/* Collection History */}
-        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
             <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
               <Check size={18} className="text-emerald-600" /> Collection History
             </h3>
           </div>
-          <div className="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+          <div className="p-4 space-y-3 max-h-150 overflow-y-auto">
             {collections.map(collection => (
               <div
                 key={collection.id}
@@ -459,7 +459,7 @@ export default function Collection() {
                     </p>
                   </div>
                   {collection.comment && (
-                    <p className="text-[10px] text-slate-500 italic max-w-[150px] text-right">"{collection.comment}"</p>
+                    <p className="text-[10px] text-slate-500 italic max-w-37.5 text-right">"{collection.comment}"</p>
                   )}
                 </div>
               </div>

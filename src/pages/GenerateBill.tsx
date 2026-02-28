@@ -96,7 +96,7 @@ export default function GenerateBill() {
       <div className="flex-1 flex flex-col gap-6 min-h-0">
         
         {/* Customer Select */}
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm shrink-0">
+        <div className="bg-white p-5 rounded-4xl border border-slate-100 shadow-sm shrink-0">
           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Billing To</label>
           <div className="relative">
             <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={18} />
@@ -112,7 +112,7 @@ export default function GenerateBill() {
         </div>
 
         {/* Due Date Select */}
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm shrink-0">
+        <div className="bg-white p-5 rounded-4xl border border-slate-100 shadow-sm shrink-0">
           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Payment Due Date</label>
           <div className="relative">
             <input 
@@ -126,7 +126,7 @@ export default function GenerateBill() {
         </div>
 
         {/* Stock Search & List */}
-        <div className="bg-white flex-1 rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white flex-1 rounded-4xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
           <div className="p-5 border-b border-slate-50 bg-slate-50/30">
             <h2 className="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2 mb-4">
               <Package size={18} className="text-blue-500" /> Inventory Selector

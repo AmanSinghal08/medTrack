@@ -156,7 +156,7 @@ export default function StockManager() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -279,7 +279,7 @@ export default function StockManager() {
                 <input name="pack" defaultValue={editingItem?.purchaseId} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none font-bold" placeholder="10x15" />
               </div>
 
-              <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+              <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-4xl border border-slate-100">
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Purchase Rate</label>
                   <input type="number" step="0.01" name="purchaseRate" defaultValue={editingItem?.purchaseRate} className="w-full bg-white px-4 py-2 rounded-xl border border-slate-100 focus:outline-none font-black text-blue-700" />

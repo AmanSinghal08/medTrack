@@ -78,7 +78,7 @@ export default function Customers() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
         {/* Search Bar */}
         <div className="p-6 border-b border-slate-50">
           <div className="relative max-w-md">
@@ -199,7 +199,7 @@ export default function Customers() {
                 <textarea name="address" defaultValue={editingCustomer?.address} rows={2} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium resize-none" />
               </div>
 
-              <div className="flex items-center justify-between bg-emerald-50/50 p-5 rounded-[2rem] border border-emerald-100/50">
+              <div className="flex items-center justify-between bg-emerald-50/50 p-5 rounded-4xl border border-emerald-100/50">
                 <div className="flex items-center gap-3">
                   <div className="bg-white p-2.5 rounded-xl shadow-sm text-emerald-600">
                     <IndianRupee size={20} />
@@ -213,7 +213,7 @@ export default function Customers() {
                   <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Active</span>
                   <div className="relative">
                     <input type="checkbox" name="isActive" defaultChecked={editingCustomer?.isActive ?? true} className="sr-only peer" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                   </div>
                 </label>
               </div>

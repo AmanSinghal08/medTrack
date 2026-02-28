@@ -83,7 +83,7 @@ export default function Dealer() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-50">
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -213,14 +213,14 @@ export default function Dealer() {
                 <textarea name="address" defaultValue={editingDealer?.address} rows={2} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium resize-none" />
               </div>
 
-              <div className="flex items-center justify-between bg-slate-50 p-5 rounded-[2rem] border border-slate-100">
+              <div className="flex items-center justify-between bg-slate-50 p-5 rounded-4xl border border-slate-100">
                 <div className="flex items-center gap-3 text-indigo-600">
                     <Truck size={20} />
                     <span className="text-xs font-black uppercase tracking-widest">Active Supplier</span>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" name="isActive" defaultChecked={editingDealer?.isActive ?? true} className="sr-only peer" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                 </label>
               </div>
 
