@@ -1,66 +1,98 @@
-import { useState, useMemo } from 'react';
-import { Plus, Package, Tag, Edit2, Trash2, Search, X } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Plus, Package, Tag, Edit2, Trash2, Search, X, Loader2 } from 'lucide-react';
 import { getBrandColorStyles } from '../utils/colors';
-
-interface Product {
-  id: string;
-  name: string;
-  brandId: string;
-  type: string; // syrup, tablet, capsule, etc.
-  hsn: string;
-  pack: string; // e.g. 10x10, 100ml
-}
+import { ProductService } from '../api/services/productService';
+import { BrandService } from '../api/services/brandService';
+import { type Product, type ProductPayload } from '../types/app';
+import { type Brand } from '../types/app';
 
 export default function Products() {
-  // 1. Mock Data (Normally these would come from your state/API)
-  const [brands] = useState([
-    { id: 'b1', name: 'Dolo' },
-    { id: 'b2', name: 'Crocin' },
-    { id: 'b3', name: 'Becosules' },
-  ]);
+  // 1. State for API Data
+  const [products, setProducts] = useState<Product[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [products, setProducts] = useState<Product[]>([
-    { id: '1', name: 'Paracetamol 650', brandId: 'b1', type: 'Tablet', hsn: '3004', pack: '15s' },
-    { id: '2', name: 'Cold & Flu Relief', brandId: 'b2', type: 'Capsule', hsn: '3004', pack: '10s' },
-  ]);
-
-  // 2. State for Filters & UI
+  // 2. UI State
   const [searchTerm, setSearchTerm] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  // 3. Filter Logic
+  // 3. Fetch Data on Mount
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [prodRes, brandRes] = await Promise.all([
+        ProductService.getAll(),
+        BrandService.getAll() 
+      ]);
+      setProducts(prodRes.data);
+      setBrands(brandRes.data);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // 4. Filter Logic (Client-side search)
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      const matchSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.hsn.includes(searchTerm);
-      const matchBrand = brandFilter === '' || p.brandId === brandFilter;
+      const matchSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.hsn.includes(searchTerm);
+      const matchBrand = brandFilter === '' || p.brand_id === brandFilter;
       return matchSearch && matchBrand;
     });
   }, [products, searchTerm, brandFilter]);
 
-  // 4. Handlers
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  // 5. API Handlers
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data: any = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(formData.entries());
     
-    const newProduct: Product = {
-      id: editingProduct?.id || Math.random().toString(36).substr(2, 9),
-      name: data.name,
-      brandId: data.brandId,
-      type: data.type,
-      hsn: data.hsn,
-      pack: data.pack,
+    // Map form names to DB snake_case names
+    const payload: ProductPayload = {
+      name: data.name as string,
+      brand_id: (data.brand_id as string) || null,
+      product_type: data.product_type as string,
+      hsn: data.hsn as string,
+      pack: data.pack as string,
     };
 
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? newProduct : p));
-    } else {
-      setProducts([...products, newProduct]);
+    try {
+      if (editingProduct) {
+        await ProductService.update(editingProduct.id, payload);
+      } else {
+        await ProductService.create(payload);
+      }
+      setIsModalOpen(false);
+      loadData(); // Refresh list
+    } catch (error) {
+      alert("Error saving product: " + error);
     }
-    setIsModalOpen(false);
   };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    try {
+      await ProductService.delete(id);
+      setProducts(products.filter(p => p.id !== id));
+    } catch (error) {
+      alert("Error deleting product: " + error);
+    }
+  };
+
+  if (loading) return (
+    <div className="h-96 flex flex-col items-center justify-center text-slate-400 gap-4">
+      <Loader2 className="animate-spin" size={40} />
+      <p className="font-bold tracking-widest uppercase text-xs">Loading Catalog...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -114,8 +146,7 @@ export default function Products() {
             </thead>
             <tbody className="divide-y divide-slate-50">
               {filteredProducts.map((p) => {
-                const brand = brands.find(b => b.id === p.brandId);
-                const colors = getBrandColorStyles(brand?.name);
+                const colors = getBrandColorStyles(p.brand_name);
                 
                 return (
                   <tr key={p.id} className="group hover:bg-slate-50/80 transition-colors">
@@ -132,19 +163,19 @@ export default function Products() {
                     </td>
                     <td className="px-8 py-5">
                       <span className={`text-[10px] ${colors.bg} ${colors.text} px-3 py-1.5 rounded-xl font-black uppercase tracking-widest border ${colors.border} inline-flex items-center gap-1.5`}>
-                        <Tag size={12} /> {brand?.name || 'Unknown'}
+                        <Tag size={12} /> {p.brand_name || 'Generic'}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-center">
                       <div className="text-sm font-bold text-slate-700">{p.pack}</div>
-                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight bg-slate-100 inline-block px-2 py-0.5 rounded-lg mt-1">{p.type}</div>
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight bg-slate-100 inline-block px-2 py-0.5 rounded-lg mt-1">{p.product_type}</div>
                     </td>
                     <td className="px-8 py-5 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                         <button onClick={() => { setEditingProduct(p); setIsModalOpen(true); }} className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors">
                           <Edit2 size={16} />
                         </button>
-                        <button onClick={() => setProducts(products.filter(item => item.id !== p.id))} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                        <button onClick={() => handleDelete(p.id)} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -174,13 +205,14 @@ export default function Products() {
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Select Brand</label>
-                  <select name="brandId" defaultValue={editingProduct?.brandId} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-bold text-slate-600">
+                  <select name="brand_id" defaultValue={editingProduct?.brand_id || ''} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-bold text-slate-600">
+                    <option value="">Select Brand</option>
                     {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Category Type</label>
-                  <select name="type" defaultValue={editingProduct?.type || 'Tablet'} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-bold text-slate-600">
+                  <select name="product_type" defaultValue={editingProduct?.product_type || 'Tablet'} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-bold text-slate-600">
                     <option>Tablet</option>
                     <option>Syrup</option>
                     <option>Capsule</option>
