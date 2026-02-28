@@ -26,6 +26,7 @@ interface Order {
   customerName: string;
   totalAmount: number;
   date: string;
+  dueDate: string;
   items: OrderItem[];
 }
 
@@ -41,6 +42,7 @@ export default function OrderHistory() {
       customerName: 'Rahul Sharma',
       totalAmount: 4500.50,
       date: '2024-03-20',
+      dueDate: '2024-04-20',
       items: [
         { productName: 'Paracetamol 650', quantity: 10, pack: '15s', batch: 'BT99', expiry: '12/26', hsn: '3004', mrp: 45, rate: 38.50, sgst: 6, cgst: 6, amount: 431.20 },
         { productName: 'Amoxicillin 500', quantity: 5, pack: '10s', batch: 'AX22', expiry: '05/25', hsn: '3004', mrp: 120, rate: 105.00, sgst: 6, cgst: 6, amount: 588.00 },
@@ -52,6 +54,7 @@ export default function OrderHistory() {
       customerName: 'City Hospital',
       totalAmount: 12400.00,
       date: '2024-03-21',
+      dueDate: '2024-04-21',
       items: [
         { productName: 'Dolo 650', quantity: 100, pack: '15s', batch: 'DL01', expiry: '01/27', hsn: '3004', mrp: 30, rate: 22.00, sgst: 6, cgst: 6, amount: 2464.00 },
       ]
@@ -99,6 +102,7 @@ export default function OrderHistory() {
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order Details</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</th>
+                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Due Date</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
               </tr>
             </thead>
@@ -130,6 +134,15 @@ export default function OrderHistory() {
                   <td className="px-8 py-5">
                     <div className="text-sm font-black text-slate-800">
                       ₹{order.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </div>
+                  </td>
+                  <td className="px-8 py-5">
+                    <div className="text-xs font-bold text-slate-600">
+                      {new Date(order.dueDate).toLocaleDateString()}
+                    </div>
+                    <div className="text-[9px] font-black text-amber-600 uppercase">
+                      {new Date(order.dueDate) < new Date() ? 'Overdue' : 
+                       Math.ceil((new Date(order.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) + ' days left'}
                     </div>
                   </td>
                   <td className="px-8 py-5 text-right">
@@ -176,9 +189,19 @@ export default function OrderHistory() {
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Customer Name</span>
                     <h4 className="text-lg font-bold text-slate-800">{selectedOrder.customerName}</h4>
                  </div>
-                 <div className="text-right">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Net Payable</span>
-                    <div className="text-2xl font-black text-emerald-600">₹{selectedOrder.totalAmount.toLocaleString()}</div>
+                 <div className="text-right space-y-3">
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Payment Due Date</span>
+                      <div className="text-sm font-bold text-slate-800">{new Date(selectedOrder.dueDate).toLocaleDateString()}</div>
+                      <div className="text-[9px] font-black text-amber-600 uppercase">
+                        {new Date(selectedOrder.dueDate) < new Date() ? '⚠ Overdue' : 
+                         Math.ceil((new Date(selectedOrder.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) + ' days remaining'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Net Payable</span>
+                      <div className="text-2xl font-black text-emerald-600">₹{selectedOrder.totalAmount.toLocaleString()}</div>
+                    </div>
                  </div>
               </div>
 

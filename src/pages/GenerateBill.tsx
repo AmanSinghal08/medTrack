@@ -35,6 +35,7 @@ export default function GenerateBill() {
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
   const [basket, setBasket] = useState<BasketItem[]>([]);
   const [stockSearchQuery, setStockSearchQuery] = useState('');
+  const [dueDate, setDueDate] = useState('');
 
   // 3. Filtered Stock List
   const filteredStock = useMemo(() => {
@@ -107,6 +108,20 @@ export default function GenerateBill() {
               <option value="">Choose Customer...</option>
               {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+          </div>
+        </div>
+
+        {/* Due Date Select */}
+        <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm shrink-0">
+          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Payment Due Date</label>
+          <div className="relative">
+            <input 
+              type="date"
+              className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none cursor-pointer"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+            />
           </div>
         </div>
 
@@ -242,7 +257,7 @@ export default function GenerateBill() {
            </div>
            
            <button 
-             disabled={basket.length === 0 || !selectedCustomerId}
+             disabled={basket.length === 0 || !selectedCustomerId || !dueDate}
              className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:bg-slate-200 disabled:text-slate-400"
            >
              <Save size={18} /> CONFIRM & SAVE ORDER

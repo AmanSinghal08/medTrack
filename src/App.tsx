@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Outlet, NavLink, useLocation } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import {
   LayoutDashboard, Users, Building2, ShoppingCart,
@@ -9,7 +9,7 @@ import {
 import {
   Customers, Dashboard, Brand, Dealer,
   GenerateBill, Products, StockManager,
-  Orders
+  Orders, Collection, DealerPayment
 } from "./pages";
 
 const RootLayout = () => {
@@ -41,7 +41,9 @@ const RootLayout = () => {
           <SidebarItem to="/products" icon={<ShoppingCart size={20} />} label="Products" isOpen={isSidebarOpen} />
           <SidebarItem to="/stock-manager" icon={<ClipboardList size={20} />} label="Stock Manager" isOpen={isSidebarOpen} />
           <SectionLabel label="Transactions" isOpen={isSidebarOpen} />
-          <SidebarItem to="/order" icon={<Receipt size={20} />} label="Order" isOpen={isSidebarOpen} />
+          <SidebarItem to="/order" icon={<ClipboardList size={20} />} label="Order" isOpen={isSidebarOpen} />
+          <SidebarItem to="/collection" icon={<Receipt size={20} />} label="Collection" isOpen={isSidebarOpen} />
+          <SidebarItem to="/dealer-payment" icon={<Receipt size={20} />} label="Dealer Payment" isOpen={isSidebarOpen} />
           <SidebarItem to="/generate-bill" icon={<Receipt size={20} />} label="Generate Bill" isOpen={isSidebarOpen} />
         </nav>
 
@@ -82,7 +84,7 @@ function SidebarItem({ to, icon, label, isOpen }: { to: string, icon: any, label
   );
 }
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <RootLayout />,
@@ -94,7 +96,9 @@ const router = createBrowserRouter([
       { path: "products", element: <Products /> },
       { path: "stock-manager", element: <StockManager /> },
       { path: "generate-bill", element: <GenerateBill /> },
+      { path: "collection", element: <Collection /> },
       { path: "order", element: <Orders /> },
+      { path: "dealer-payment", element: <DealerPayment /> },
     ],
   },
 ]);

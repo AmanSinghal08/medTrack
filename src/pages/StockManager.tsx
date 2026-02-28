@@ -22,6 +22,7 @@ interface StockItem {
   sgst: number;
   cgst: number;
   totalPurchaseAmount: number;
+  purchaseId: string;
 }
 
 export default function StockManager() {
@@ -40,11 +41,11 @@ export default function StockManager() {
 
   const [inventory, setInventory] = useState<StockItem[]>([
     {
-      id: 's1', productId: 'p1', quantity: 120, pack: '15s', batch: 'B2204', dealerId: 'd1',
+      id: 's1', productId: 'p1', quantity: 120, pack: '15s', batch: 'B2204', dealerId: 'd1', purchaseId: 'p1',
       expiryDate: '12/26', hsn: '3004', mrp: 45, purchaseRate: 28.50, sgst: 6, cgst: 6, totalPurchaseAmount: 3420
     },
     {
-      id: 's2', productId: 'p2', quantity: 15, pack: '10s', batch: 'AMX-99', dealerId: 'd2',
+      id: 's2', productId: 'p2', quantity: 15, pack: '10s', batch: 'AMX-99', dealerId: 'd2', purchaseId: 'p2',
       expiryDate: '05/25', hsn: '3004', mrp: 120, purchaseRate: 92.00, sgst: 6, cgst: 6, totalPurchaseAmount: 1380
     }
   ]);
@@ -105,6 +106,7 @@ export default function StockManager() {
       sgst: Number(data.sgst),
       cgst: Number(data.cgst),
       totalPurchaseAmount: qty * rate,
+      purchaseId: data.purchaseId,
     };
 
     if (editingItem) {
@@ -271,6 +273,10 @@ export default function StockManager() {
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Pack Size</label>
                 <input name="pack" defaultValue={editingItem?.pack} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none font-bold" placeholder="10x15" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Pack Size</label>
+                <input name="pack" defaultValue={editingItem?.purchaseId} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none font-bold" placeholder="10x15" />
               </div>
 
               <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">

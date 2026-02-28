@@ -6,6 +6,10 @@ import GenerateBill from "./GenerateBill";
 import Products from "./Products";
 import StockManager from "./StockManager";
 import Orders from "./Orders";
+import Collection from "./Collection";
+import DealerPayment from "./DealerPayment";
+
+
 
 
 
@@ -17,5 +21,7 @@ export {
     Products,
     Dealer,
     GenerateBill,
-    Orders
+    Orders,
+    Collection,
+    DealerPayment
 }
