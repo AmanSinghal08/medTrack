@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Clock, Calendar, TrendingUp, ArrowUpRight, AlertCircle, Package, Loader2, Truck, AlertTriangle } from 'lucide-react';
+import { Clock, Calendar, TrendingUp, ArrowUpRight, AlertCircle, Package, Loader2, AlertTriangle } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import { SalesOrderService } from '../api/services/salesOrderService';
 import { CustomerCollectionService } from '../api/services/customerCollectionService';
