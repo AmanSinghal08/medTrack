@@ -5,7 +5,8 @@ import {
 } from 'lucide-react';
 import { CustomerCollectionService } from '../api/services/customerCollectionService';
 import { SalesOrderService } from '../api/services/salesOrderService';
-import { type CustomerCollection, type CustomerCollectionPayload, type SalesOrder } from '../types/app';
+import { type Customer, type CustomerCollection, type CustomerCollectionPayload, type SalesOrder } from '../types/app';
+import { CustomerService } from '../api/services/customerService';
 
 interface PendingOrder {
   id: string;
@@ -21,6 +22,7 @@ export default function Collection() {
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>([]);
   const [collections, setCollections] = useState<CustomerCollection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,10 +39,12 @@ export default function Collection() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [salesRes, collectionRes] = await Promise.all([
+      const [salesRes, collectionRes, customersRes] = await Promise.all([
         SalesOrderService.getAll(),
         CustomerCollectionService.getAll(),
+        CustomerService.getAll(),
       ]);
+      setCustomers(customersRes.data || [])
       setSalesOrders(salesRes.data || []);
       setCollections(collectionRes.data || []);
     } catch (error) {
@@ -383,6 +387,33 @@ export default function Collection() {
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Collection Date</label>
                 <input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none focus:ring-4 focus:ring-emerald-500/10" />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1">Select Customer</label>
+                <select
+                  value={formData.orderId}
+                  onChange={(e) => {
+                    const order = pendingOrdersWithBalance.find((o) => o.id === e.target.value);
+                    if (order) {
+                      const status = getOrderPaymentStatus(order.id);
+                      setFormData({ ...formData, orderId: e.target.value, amount: status.remainingAmount.toString() });
+                    } else {
+                      setFormData({ ...formData, orderId: e.target.value });
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none focus:ring-4 focus:ring-emerald-500/10 appearance-none cursor-pointer"
+                >
+                  <option value="">Choose Customer...</option>
+                  {customers.map((customer) => {
+ 
+                    return (
+                      <option key={customer.id} value={customer.id}>
+                         {customer.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
 
               <div>

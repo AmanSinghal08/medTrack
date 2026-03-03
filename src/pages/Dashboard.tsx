@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Clock, Calendar, TrendingUp, ArrowUpRight, AlertCircle, Package, Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Clock, Calendar, TrendingUp, ArrowUpRight, AlertCircle, Package, Loader2, Truck, AlertTriangle } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import { SalesOrderService } from '../api/services/salesOrderService';
 import { CustomerCollectionService } from '../api/services/customerCollectionService';
@@ -13,6 +13,9 @@ import {
   type Product,
   type SalesOrder,
 } from '../types/app';
+import { getSixMonthsFromNow } from '../utils/date';
+
+
 
 export default function Dashboard() {
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>([]);
@@ -21,6 +24,32 @@ export default function Dashboard() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dueDate, setDueDate] = useState(getSixMonthsFromNow());
+  const [comingExpiryInventory, setComingExpiryInventory] = useState<InventoryBatch[]>([]);
+
+
+
+
+  const loadComingExpireInventory = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await InventoryService.getAll({
+        expiryDate: dueDate,
+      });
+
+      if (response.data) {
+        setComingExpiryInventory(response.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to load expiring inventory:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dueDate]);
+
+  useEffect(() => {
+    loadComingExpireInventory();
+  }, [loadComingExpireInventory]);
 
   const loadData = async () => {
     setLoading(true);
@@ -121,8 +150,9 @@ export default function Dashboard() {
   }, [salesOrders, collectionByOrderId]);
 
   const criticalInventory = useMemo(() => {
+
     return inventory
-      .filter((i) => Number(i.qty || 0) < 100)
+      .filter((i) => Number(i.qty || 0) <= i.critical_number_alert)
       .sort((a, b) => Number(a.qty || 0) - Number(b.qty || 0))
       .slice(0, 8);
   }, [inventory]);
@@ -176,9 +206,8 @@ export default function Dashboard() {
               return (
                 <div key={sale.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className={`h-11 w-11 rounded-2xl flex items-center justify-center font-black text-[10px] ${
-                      isOverdue ? 'bg-rose-100 text-rose-600' : isDueSoon ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'
-                    }`}>
+                    <div className={`h-11 w-11 rounded-2xl flex items-center justify-center font-black text-[10px] ${isOverdue ? 'bg-rose-100 text-rose-600' : isDueSoon ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'
+                      }`}>
                       <AlertCircle size={20} />
                     </div>
                     <div>
@@ -190,13 +219,12 @@ export default function Dashboard() {
                   </div>
                   <div className="text-right">
                     <p className="font-black text-slate-800">{formatCurrency(sale.remaining)}</p>
-                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter border ${
-                      isOverdue
-                        ? 'bg-rose-100 text-rose-700 border-rose-200'
-                        : isDueSoon
+                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter border ${isOverdue
+                      ? 'bg-rose-100 text-rose-700 border-rose-200'
+                      : isDueSoon
                         ? 'bg-amber-100 text-amber-700 border-amber-200'
                         : 'bg-blue-100 text-blue-700 border-blue-200'
-                    }`}>
+                      }`}>
                       {isOverdue ? `Overdue ${Math.abs(daysUntilDue)}d` : `${daysUntilDue}d left`}
                     </span>
                   </div>
@@ -238,6 +266,95 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+            <h3 className="font-bold text-slate-800 flex items-center gap-2">
+              <AlertCircle size={18} className="text-amber-600" /> Expiry coming soon products
+            </h3>
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Expiring before</label>
+              <input
+                type="date"
+                className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none cursor-pointer"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                defaultValue={getSixMonthsFromNow()}
+              />
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50">
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item & Packaging</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Batch/Expiry</th>
+
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Purchase Rate</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                  <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Current Stock</th>
+
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {comingExpiryInventory.map((item) => {
+                  const product = products.find((p) => p.id === item.product_id);
+
+                  const qty = Number(item.qty || 0);
+                  console.log({ item })
+                  return (
+                    <tr key={item.id} className="group hover:bg-slate-50/80 transition-colors">
+                      <td className="px-8 py-5">
+                        <div className="font-bold text-slate-800 text-sm">{item.product_name || product?.name || '-'}</div>
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
+                          HSN {item.hsn} • {item.pack}
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <div className="text-sm font-bold text-slate-700">{item.batch_no}</div>
+                        <div className="text-[10px] text-amber-600 font-black uppercase mt-1 flex items-center gap-1.5">
+                          <Clock size={10} /> Exp {item.expiry_date || '-'}
+                        </div>
+                      </td>
+
+                      <td className="px-8 py-5">
+                        <div className="text-sm font-black text-blue-600">{formatCurrency(Number(item.purchase_rate || 0))}</div>
+                        <div className="text-[10px] text-slate-400 font-bold">MRP: {formatCurrency(Number(item.mrp || 0))}</div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <div className="text-sm font-black text-blue-600">{item.product_type}</div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${qty < 20 ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-700'}`}>
+                          {qty < 20 && <AlertTriangle size={12} />}
+                          <span className="text-sm font-black">{qty}</span>
+                          <span className="text-[10px] font-bold uppercase">Units</span>
+                        </div>
+                      </td>
+
+                    </tr>
+                  );
+                })}
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   );
 }

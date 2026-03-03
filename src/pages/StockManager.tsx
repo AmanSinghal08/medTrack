@@ -43,8 +43,9 @@ export default function StockManager() {
         ProductService.getAll(),
         DealerService.getAll(),
         PurchaseOrderService.getAll(),
+ 
       ]);
-
+ 
       setInventory(inventoryRes.data || []);
       setProducts(productRes.data || []);
       setDealers(dealerRes.data || []);
@@ -301,7 +302,7 @@ export default function StockManager() {
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4">
+      <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input
@@ -331,6 +332,7 @@ export default function StockManager() {
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Batch/Expiry</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Supplier (Dealer)</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Purchase Rate</th>
+                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Current Stock</th>
                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
@@ -340,7 +342,7 @@ export default function StockManager() {
                 const product = products.find((p) => p.id === item.product_id);
                 const dealer = dealers.find((d) => d.id === item.dealer_id);
                 const qty = Number(item.qty || 0);
-
+                console.log({item})
                 return (
                   <tr key={item.id} className="group hover:bg-slate-50/80 transition-colors">
                     <td className="px-8 py-5">
@@ -364,6 +366,9 @@ export default function StockManager() {
                     <td className="px-8 py-5">
                       <div className="text-sm font-black text-blue-600">{formatCurrency(Number(item.purchase_rate || 0))}</div>
                       <div className="text-[10px] text-slate-400 font-bold">MRP: {formatCurrency(Number(item.mrp || 0))}</div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="text-sm font-black text-blue-600">{item.product_type}</div>
                     </td>
                     <td className="px-8 py-5">
                       <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${qty < 20 ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-700'}`}>
@@ -413,7 +418,7 @@ export default function StockManager() {
             <div className="p-8 border-b flex justify-between items-center bg-blue-50/30">
               <div>
                 <h3 className="font-black text-xl text-slate-800">
-                  {editingItem ? 'Edit Purchase Entry' : 'New Stock Inbound'}
+                  {editingItem ? 'Edit Purchase Entry' : 'Add New Stock'}
                 </h3>
                 <p className="text-xs text-blue-600/50 font-bold uppercase tracking-widest mt-1">Inventory Management</p>
               </div>
@@ -465,7 +470,7 @@ export default function StockManager() {
               </div>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">HSN</label>
-                <input name="hsn" defaultValue={editingItem?.hsn} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none font-bold" placeholder="3004" />
+                <input name="hsn" defaultValue={editingItem?.hsn || 3004} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none font-bold" placeholder="3004" />
               </div>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Purchase Order (Optional)</label>
@@ -490,11 +495,11 @@ export default function StockManager() {
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">SGST (%)</label>
-                  <input type="number" min="0" step="0.01" name="sgst" defaultValue={editingItem?.sgst ?? 0} className="w-full bg-white px-4 py-2 rounded-xl border border-slate-100 focus:outline-none" />
+                  <input type="number" min="0" step="0.01" name="sgst" defaultValue={editingItem?.sgst ?? 2.5} className="w-full bg-white px-4 py-2 rounded-xl border border-slate-100 focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">CGST (%)</label>
-                  <input type="number" min="0" step="0.01" name="cgst" defaultValue={editingItem?.cgst ?? 0} className="w-full bg-white px-4 py-2 rounded-xl border border-slate-100 focus:outline-none" />
+                  <input type="number" min="0" step="0.01" name="cgst" defaultValue={editingItem?.cgst ?? 2.5} className="w-full bg-white px-4 py-2 rounded-xl border border-slate-100 focus:outline-none" />
                 </div>
               </div>
 

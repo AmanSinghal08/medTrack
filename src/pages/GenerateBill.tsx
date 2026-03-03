@@ -13,6 +13,7 @@ import {
   type SalesOrderItemPayload,
   type SalesOrderPayload,
 } from '../types/app';
+import { formatDate } from '../utils/date';
 
 interface BasketItem {
   id: string;
@@ -282,7 +283,8 @@ export default function GenerateBill() {
                   <div className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{item.product_name || 'Unknown Product'}</div>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-[10px] font-black text-slate-400 uppercase bg-white px-2 py-0.5 rounded border border-slate-100">Batch {item.batch_no}</span>
-                    <span className="text-[10px] font-bold text-amber-600 uppercase">Exp {item.expiry_date || '-'}</span>
+                    <span className="text-[10px] font-bold text-amber-600 uppercase">Exp {formatDate(item.expiry_date || "") || '-'}</span>
+                    <span className="text-[10px] font-black text-amber-600 uppercase"> {item.product_type}</span>
                   </div>
                 </div>
                 <div className="text-right flex items-center gap-4">

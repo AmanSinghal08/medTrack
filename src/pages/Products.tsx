@@ -62,6 +62,7 @@ export default function Products() {
       product_type: data.product_type as string,
       hsn: data.hsn as string,
       pack: data.pack as string,
+      critical_number_alert: Number(data.critical_number_alert)
     };
 
     try {
@@ -106,12 +107,12 @@ export default function Products() {
           onClick={() => { setEditingProduct(null); setIsModalOpen(true); }}
           className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-100 active:scale-95"
         >
-          <Plus size={20} /> Register Product
+          <Plus size={20} /> Add Product
         </button>
       </div>
 
       {/* Filters Card */}
-      <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4">
+      <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
@@ -193,7 +194,7 @@ export default function Products() {
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b flex justify-between items-center bg-slate-50/50">
-              <h3 className="font-black text-xl text-slate-800">{editingProduct ? 'Edit Product' : 'New Registration'}</h3>
+              <h3 className="font-black text-xl text-slate-800">{editingProduct ? 'Edit Product' : 'Add new Product'}</h3>
               <button onClick={() => setIsModalOpen(false)} className="h-10 w-10 flex items-center justify-center rounded-full bg-white border border-slate-100 text-slate-400 hover:text-rose-500 transition-colors"><X size={20}/></button>
             </div>
             
@@ -217,16 +218,34 @@ export default function Products() {
                     <option>Syrup</option>
                     <option>Capsule</option>
                     <option>Injection</option>
+                    <option>Lotion</option>
+                    <option>Soap</option>
+                    <option>Powder</option>
                     <option>Ointment</option>
+                    <option>Spray</option>
+                    <option>Diaper</option>
+                    <option>Syringe</option>
+                    <option>Gel</option>
+                    <option>Micropore</option>
+                    <option>Drop</option>
+                    <option>Oil</option>
+                    <option>surgical</option>
+                    <option>I.V. Infusion</option>
+
                   </select>
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">HSN Code</label>
-                  <input name="hsn" defaultValue={editingProduct?.hsn} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium" />
+                  <input name="hsn" defaultValue={editingProduct?.hsn || "3004"} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Packaging (e.g. 10x10)</label>
                   <input name="pack" defaultValue={editingProduct?.pack} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium" />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Critical Alert Level</label>
+                  <input name="critical_number_alert" defaultValue={100} required className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none transition-all font-medium" />
                 </div>
               </div>
 

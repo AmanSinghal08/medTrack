@@ -100,6 +100,7 @@ export interface Product {
   company_name?: string;
   created_at?: string;
   updated_at?: string;
+  critical_number_alert: number
 }
 
 export interface ProductPayload {
@@ -108,6 +109,7 @@ export interface ProductPayload {
   product_type: string;
   hsn: string;
   pack: string;
+  critical_number_alert: number
 }
 
 export interface InventoryItem {
@@ -142,6 +144,8 @@ export interface InventoryBatch {
   dealer_company_name?: string;
   created_at?: string;
   updated_at?: string;
+  product_type?: string
+  critical_number_alert: number
 }
 
 export interface InventoryBatchPayload {
